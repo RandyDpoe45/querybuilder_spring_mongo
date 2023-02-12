@@ -43,6 +43,7 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
                     part,
                     pathBuilder
             );
+            pred = part.isNegate() ? pred.not() : pred;
             predicate = predicate == null ? pred : predicate.and(pred);
 
         }
@@ -54,6 +55,9 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
             ProtoQueryDtoPart protoQueryDtoPart,
             PathBuilder<T> pathBuilder
     ) {
+        if(protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_IS_NULL.getValue()))
+            return pathBuilder.get(protoQueryDtoPart.getAttribute()).isNull();
+
         if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.FLOAT.getTypeCode())) {
             return buildFloatCondition(protoQueryDtoPart, pathBuilder);
         } else if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.INTEGER.getTypeCode())) {
@@ -85,7 +89,7 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
         else if (protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_LESSER_EQUAL.getValue()))
             return numberPath.loe(value);
         else if (protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_BETWEEN.getValue()))
-            return numberPath.between(value, new BigDecimal(protoQueryDtoPart.getValue2()));
+            return numberPath.between(value, Double.parseDouble(protoQueryDtoPart.getValue2()));
         else if (protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.IN.getValue()))
             return numberPath.in(
                     Arrays.stream(protoQueryDtoPart.getValue()
@@ -204,7 +208,9 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
                     protoQueryDtoPart.getValue()
                             .split(protoQueryDtoPart.getDelimiter())
             );
-        return path.containsIgnoreCase(protoQueryDtoPart.getValue());
+        else if(protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_EQUAL_CONTAINS.getValue()))
+            return path.containsIgnoreCase(protoQueryDtoPart.getValue());
+        return path.eq(protoQueryDtoPart.getValue());
     }
 
 }
