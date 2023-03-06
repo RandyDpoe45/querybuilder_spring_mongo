@@ -14,7 +14,7 @@
     <!--Library Metadata -->
     <groupId>io.github.randydpoe45</groupId>
     <artifactId>dpoe-sd-mongo-query-builder</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -50,7 +50,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <query-dsl.version>5.0.0</query-dsl.version>
         <query-dsl.codegen.version>0.6.8</query-dsl.codegen.version>
-        <gpg.keyname>0x854EAFF5</gpg.keyname>
+<!--        <gpg.keyname>0x854EAFF5</gpg.keyname>-->
+        <gpg.keyname>0x1F682C18</gpg.keyname>
     </properties>
 
     <dependencies>
@@ -143,7 +144,8 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
-                    <javadocExecutable>/home/randy/.jdks/corretto-17.0.5/bin/javadoc</javadocExecutable>
+<!--                    <javadocExecutable>/home/randy/.jdks/corretto-17.0.5/bin/javadoc</javadocExecutable>-->
+                    <javadocExecutable>/home/rd_crow_shadow/.jdks/corretto-11.0.18/bin/javadoc</javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>

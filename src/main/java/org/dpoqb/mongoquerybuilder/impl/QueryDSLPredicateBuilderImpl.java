@@ -55,10 +55,12 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
             ProtoQueryDtoPart protoQueryDtoPart,
             PathBuilder<T> pathBuilder
     ) {
-        if(protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_IS_NULL.getValue()))
+        if (protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_IS_NULL.getValue()))
             return pathBuilder.get(protoQueryDtoPart.getAttribute()).isNull();
 
-        if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.FLOAT.getTypeCode())) {
+        if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.BOOLEAN.getTypeCode())) {
+            return buildBooleanCondition(protoQueryDtoPart, pathBuilder);
+        } else if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.FLOAT.getTypeCode())) {
             return buildFloatCondition(protoQueryDtoPart, pathBuilder);
         } else if (protoQueryDtoPart.getDataType().equals(ProtoDataTypeEnum.INTEGER.getTypeCode())) {
             return buildIntegerCondition(protoQueryDtoPart, pathBuilder);
@@ -71,10 +73,21 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
         }
     }
 
+    private BooleanExpression buildBooleanCondition(
+            ProtoQueryDtoPart protoQueryDtoPart,
+            PathBuilder<T> pathBuilder
+    ) {
+        BooleanPath booleanPath = pathBuilder.getBoolean(
+                protoQueryDtoPart.getAttribute()
+        );
+        Boolean value = Boolean.parseBoolean(protoQueryDtoPart.getValue());
+        return booleanPath.eq(value);
+    }
+
     private BooleanExpression buildFloatCondition(
             ProtoQueryDtoPart protoQueryDtoPart,
             PathBuilder<T> pathBuilder
-    ){
+    ) {
         NumberPath<Double> numberPath = pathBuilder.getNumber(
                 protoQueryDtoPart.getAttribute(),
                 Double.class
@@ -99,6 +112,7 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
             );
         return numberPath.eq(value);
     }
+
     private BooleanExpression buildIntegerCondition(
             ProtoQueryDtoPart protoQueryDtoPart,
             PathBuilder<T> pathBuilder
@@ -208,7 +222,7 @@ public class QueryDSLPredicateBuilderImpl<T> implements IQueryDSLPredicateBuilde
                     protoQueryDtoPart.getValue()
                             .split(protoQueryDtoPart.getDelimiter())
             );
-        else if(protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_EQUAL_CONTAINS.getValue()))
+        else if (protoQueryDtoPart.getOperator().equals(QueryConstantsEnum.CONDITION_EQUAL_CONTAINS.getValue()))
             return path.containsIgnoreCase(protoQueryDtoPart.getValue());
         return path.eq(protoQueryDtoPart.getValue());
     }

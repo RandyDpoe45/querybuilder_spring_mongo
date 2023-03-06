@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public enum ProtoDataTypeEnum {
 
+    BOOLEAN("Boolean"),
+
     STRING("String"),
 
     INTEGER("Integer"),
