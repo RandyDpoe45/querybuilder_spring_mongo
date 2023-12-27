@@ -7,14 +7,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.0</version>
+        <version>3.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <!--Library Metadata -->
     <groupId>io.github.randydpoe45</groupId>
     <artifactId>dpoe-sd-mongo-query-builder</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -44,13 +44,12 @@
     </scm>
 
     <properties>
-        <java.verison>11</java.verison>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <query-dsl.version>5.0.0</query-dsl.version>
         <query-dsl.codegen.version>0.6.8</query-dsl.codegen.version>
-<!--        <gpg.keyname>0x854EAFF5</gpg.keyname>-->
         <gpg.keyname>0x1F682C18</gpg.keyname>
     </properties>
 
@@ -64,23 +63,17 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--QUERY DSL-->
-        <!--		https://lucasgauk.com/Spring-MongoDb-and-Querydsl/-->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-mongodb</artifactId>
-            <version>${query-dsl.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.16.0</version>
         </dependency>
+
+        <!--MONGO-->
         <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-            <version>${query-dsl.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mysema.codegen</groupId>
-            <artifactId>codegen</artifactId>
-            <version>${query-dsl.codegen.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
     </dependencies>
 
@@ -103,14 +96,12 @@
                 <version>1.1.3</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
                         <goals>
                             <goal>process</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
-                            <processor>org.springframework.data.mongodb.repository.support.MongoAnnotationProcessor
-                            </processor>
+                            <processor>com.querydsl.mongodb.morphia.MorphiaAnnotationProcessor</processor>
                         </configuration>
                     </execution>
                 </executions>
@@ -129,23 +120,12 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
 <!--                    <javadocExecutable>/home/randy/.jdks/corretto-17.0.5/bin/javadoc</javadocExecutable>-->
-                    <javadocExecutable>/home/rd_crow_shadow/.jdks/corretto-11.0.18/bin/javadoc</javadocExecutable>
+                    <javadocExecutable>/home/rd_crow_shadow/.jdks/corretto-17.0.8/bin/javadoc</javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>

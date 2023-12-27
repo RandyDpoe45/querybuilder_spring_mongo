@@ -1,4 +1,4 @@
-package org.dpoqb.mongoquerybuilder.dtos;
+package org.dpoqb.mongoquerybuilder.dtos.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProtoQueryDto{
+public class MongoQueryDto {
 
-    private List<ProtoQueryDtoPart> queryDtoPartList;
+    private List<MongoQueryDtoPart> mongoQueryDtoPartList;
 
     private PaginationDto paginationDto;
 }

@@ -1,4 +1,4 @@
-package org.dpoqb.mongoquerybuilder.dtos;
+package org.dpoqb.mongoquerybuilder.dtos.query;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProtoQueryDtoPart extends QueryDtoPart {
+public class MongoQueryDtoPart extends BaseQueryDtoPart {
 
     private String dataType;
 

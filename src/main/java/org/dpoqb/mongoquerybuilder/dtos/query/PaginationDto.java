@@ -1,4 +1,4 @@
-package org.dpoqb.mongoquerybuilder.dtos;
+package org.dpoqb.mongoquerybuilder.dtos.query;
 
 import lombok.Getter;
 import lombok.Setter;

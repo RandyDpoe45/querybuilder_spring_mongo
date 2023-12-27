@@ -6,9 +6,10 @@
 package org.dpoqb.mongoquerybuilder.impl;
 
 
-import org.dpoqb.mongoquerybuilder.dtos.PaginationDto;
-import org.dpoqb.mongoquerybuilder.dtos.QueryConstantsEnum;
-import org.dpoqb.mongoquerybuilder.dtos.SortPropertyDto;
+import org.dpoqb.mongoquerybuilder.constants.PaginationConstantsEnum;
+import org.dpoqb.mongoquerybuilder.dtos.query.PaginationDto;
+import org.dpoqb.mongoquerybuilder.constants.QueryOperationsEnum;
+import org.dpoqb.mongoquerybuilder.dtos.query.SortPropertyDto;
 import org.dpoqb.mongoquerybuilder.interfaces.IPaginationBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class PaginationBuilderImpl implements IPaginationBuilder {
             if (paginationDto.getSortPropertyDtoList() != null && !paginationDto.getSortPropertyDtoList().isEmpty()) {
                 List<Sort.Order> orders = new ArrayList<>();
                 for(SortPropertyDto dto : paginationDto.getSortPropertyDtoList()){
-                    Direction x = dto.getSortDirection().equals(QueryConstantsEnum.DESC_SORT_DIRECTION.getValue()) ?
+                    Direction x = dto.getSortDirection().equals(PaginationConstantsEnum.DESC_SORT_DIRECTION.getCode()) ?
                             Direction.DESC : Direction.ASC;
                     orders.add(new Sort.Order(x, dto.getSortProperty()));
                 }

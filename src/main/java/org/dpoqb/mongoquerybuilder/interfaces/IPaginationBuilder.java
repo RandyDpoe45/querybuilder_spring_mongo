@@ -5,7 +5,7 @@
  */
 package org.dpoqb.mongoquerybuilder.interfaces;
 
-import org.dpoqb.mongoquerybuilder.dtos.PaginationDto;
+import org.dpoqb.mongoquerybuilder.dtos.query.PaginationDto;
 import org.springframework.data.domain.Pageable;
 
 /**
