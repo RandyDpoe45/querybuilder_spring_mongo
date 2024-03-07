@@ -19,15 +19,17 @@ public enum DataTypeEnum {
 
     DATE("Date"),
 
-    TIME("Time");
+    TIME("Time"),
+
+    DATETIME("DateTime");
 
     private String typeCode;
 
-    public static DataTypeEnum getByCode(String code){
-        for (DataTypeEnum aux : DataTypeEnum.values()){
+    public static DataTypeEnum getByCode(String code) {
+        for (DataTypeEnum aux : DataTypeEnum.values()) {
             if (aux.getTypeCode().equals(code))
                 return aux;
         }
-        throw new RuntimeException("Data type: "+ code+ " not supported");
+        throw new RuntimeException("Data type: " + code + " not supported");
     }
 }
