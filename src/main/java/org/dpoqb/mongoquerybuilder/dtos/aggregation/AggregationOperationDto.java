@@ -21,7 +21,8 @@ import lombok.experimental.Accessors;
         @JsonSubTypes.Type(value = SortAggregationDto.class, name = "sort"),
         @JsonSubTypes.Type(value = UnwindAggregationDto.class, name = "unwind"),
         @JsonSubTypes.Type(value = GroupAggregationDto.class, name = "group"),
-        @JsonSubTypes.Type(value = QueryAggregationDto.class, name = "query")
+        @JsonSubTypes.Type(value = QueryAggregationDto.class, name = "query"),
+        @JsonSubTypes.Type(value = FacetAggregationDto.class, name = "facet")
 })
 public abstract class AggregationOperationDto {
 

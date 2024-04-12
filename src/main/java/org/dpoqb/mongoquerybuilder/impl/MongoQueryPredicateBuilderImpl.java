@@ -93,7 +93,7 @@ public class MongoQueryPredicateBuilderImpl<T> implements IMongoQueryPredicateBu
         if (operations.equals(QueryOperationsEnum.COND_GREATER))
             return negate ? baseCriteria.not().gt(conv.convert(mongoQueryDtoPart.getValue())) : baseCriteria.gt(conv.convert(mongoQueryDtoPart.getValue()));
         if (operations.equals(QueryOperationsEnum.COND_EQUAL_CONTAINS))
-            return negate ? baseCriteria.not().regex(mongoQueryDtoPart.getValue()) : baseCriteria.regex(mongoQueryDtoPart.getValue());
+            return negate ? baseCriteria.not().regex("/^" + mongoQueryDtoPart.getValue() + "$/i") : baseCriteria.regex("/^" + mongoQueryDtoPart.getValue() + "$/i");
         else if (operations.equals(QueryOperationsEnum.COND_GREATER_EQUAL))
             return negate ? baseCriteria.not().gte(conv.convert(mongoQueryDtoPart.getValue())) : baseCriteria.gte(conv.convert(mongoQueryDtoPart.getValue()));
         else if (operations.equals(QueryOperationsEnum.COND_LESSER))

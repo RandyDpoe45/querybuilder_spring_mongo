@@ -40,27 +40,34 @@ public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
 
         List<AggregationOperation> aggregationList = new ArrayList<>();
         for (AggregationOperationDto operationDto : aggregationOperationsDtos) {
-            if (operationDto instanceof PaginationAggregationDto dto)
-                aggregationList.addAll(createPaginationAggregation(dto));
-            else if (operationDto instanceof SortAggregationDto dto)
-                aggregationList.add(createSortAggregation(dto));
-            else if (operationDto instanceof ProjectAggregationDto dto)
-                aggregationList.add(createProjectionAggregation(dto));
-            else if (operationDto instanceof UnwindAggregationDto dto)
-                aggregationList.add(createUnwindAggregation(dto));
-            else if (operationDto instanceof QueryAggregationDto dto)
-                aggregationList.add(createQueryAggregation(dto));
-            else if (operationDto instanceof GroupAggregationDto dto)
-                aggregationList.add(createGroupAggregation(dto));
+            aggregationList.addAll(resolveOperationsAux(operationDto));
         }
         Aggregation aggregation = Aggregation.newAggregation(aggregationList);
         AggregationResults<BasicDBObject> result = mongoTemplate.aggregate(aggregation, this.collectionName, BasicDBObject.class);
         return result.getMappedResults();
     }
 
+    private List<AggregationOperation> resolveOperationsAux(AggregationOperationDto operationDto) {
+        if (operationDto instanceof PaginationAggregationDto dto)
+            return createPaginationAggregation(dto);
+        else if (operationDto instanceof SortAggregationDto dto)
+            return List.of(createSortAggregation(dto));
+        else if (operationDto instanceof ProjectAggregationDto dto)
+            return List.of(createProjectionAggregation(dto));
+        else if (operationDto instanceof UnwindAggregationDto dto)
+            return List.of(createUnwindAggregation(dto));
+        else if (operationDto instanceof QueryAggregationDto dto)
+            return List.of(createQueryAggregation(dto));
+        else if (operationDto instanceof GroupAggregationDto dto)
+            return List.of(createGroupAggregation(dto));
+        else if (operationDto instanceof FacetAggregationDto dto)
+            return createFacetAggregation(dto);
+        throw new RuntimeException("No aggregation operation implemented");
+    }
+
     private List<AggregationOperation> createPaginationAggregation(PaginationAggregationDto paginationAggregationDto) {
         return Arrays.asList(
-                Aggregation.skip(paginationAggregationDto.getPageNumber() * paginationAggregationDto.getPageSize()),
+                Aggregation.skip((long) paginationAggregationDto.getPageNumber() * paginationAggregationDto.getPageSize()),
                 Aggregation.limit(paginationAggregationDto.getPageSize())
         );
     }
@@ -87,8 +94,20 @@ public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
         return op;
     }
 
+    private List<AggregationOperation> createFacetAggregation(FacetAggregationDto facetAggregationDto) {
+        List<AggregationOperation> aggregationOperations = new ArrayList<>();
+        facetAggregationDto.getFacets().forEach((name, operations) -> {
+            List<AggregationOperation> ops = new ArrayList<>();
+            operations.forEach(x -> {
+                ops.addAll(resolveOperationsAux(x));
+            });
+            aggregationOperations.add(Aggregation.facet(ops.toArray(new AggregationOperation[0])).as(name));
+        });
+        return aggregationOperations;
+    }
+
     private AggregationOperation createUnwindAggregation(UnwindAggregationDto unwindAggregationDto) {
-        Boolean withIndex = !(Objects.isNull(unwindAggregationDto.getArrayIndexName()) || unwindAggregationDto.getArrayIndexName().isEmpty());
+        boolean withIndex = !(Objects.isNull(unwindAggregationDto.getArrayIndexName()) || unwindAggregationDto.getArrayIndexName().isEmpty());
         UnwindOperation op = withIndex ?
                 Aggregation.unwind(unwindAggregationDto.getField(), unwindAggregationDto.getArrayIndexName())
                 : Aggregation.unwind(unwindAggregationDto.getField());
