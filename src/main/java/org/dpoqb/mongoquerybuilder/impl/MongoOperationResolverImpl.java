@@ -11,7 +11,6 @@ import org.dpoqb.mongoquerybuilder.interfaces.IMongoQueryPredicateBuilder;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,10 +107,9 @@ public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
 
     private AggregationOperation createUnwindAggregation(UnwindAggregationDto unwindAggregationDto) {
         boolean withIndex = !(Objects.isNull(unwindAggregationDto.getArrayIndexName()) || unwindAggregationDto.getArrayIndexName().isEmpty());
-        UnwindOperation op = withIndex ?
+        return withIndex ?
                 Aggregation.unwind(unwindAggregationDto.getField(), unwindAggregationDto.getArrayIndexName())
                 : Aggregation.unwind(unwindAggregationDto.getField());
-        return op;
     }
 
     private AggregationOperation createQueryAggregation(QueryAggregationDto queryAggregationDto) {
