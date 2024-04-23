@@ -12,10 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
 
@@ -60,7 +57,7 @@ public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
         else if (operationDto instanceof GroupAggregationDto dto)
             return List.of(createGroupAggregation(dto));
         else if (operationDto instanceof FacetAggregationDto dto)
-            return createFacetAggregation(dto);
+            return List.of(createFacetAggregation(dto));
         throw new RuntimeException("No aggregation operation implemented");
     }
 
@@ -93,16 +90,15 @@ public class MongoOperationResolverImpl<T> implements IMongoOperationResolver {
         return op;
     }
 
-    private List<AggregationOperation> createFacetAggregation(FacetAggregationDto facetAggregationDto) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        facetAggregationDto.getFacets().forEach((name, operations) -> {
+    private AggregationOperation createFacetAggregation(FacetAggregationDto facetAggregationDto) {
+        FacetOperation facetOperation = null;
+        for(Map.Entry<String, List<AggregationOperationDto>> entry : facetAggregationDto.getFacets().entrySet()){
             List<AggregationOperation> ops = new ArrayList<>();
-            operations.forEach(x -> {
-                ops.addAll(resolveOperationsAux(x));
-            });
-            aggregationOperations.add(Aggregation.facet(ops.toArray(new AggregationOperation[0])).as(name));
-        });
-        return aggregationOperations;
+            entry.getValue().forEach(x -> ops.addAll(resolveOperationsAux(x)));
+            facetOperation = Objects.isNull(facetOperation) ? Aggregation.facet(ops.toArray(new AggregationOperation[0])).as(entry.getKey()) :
+                    facetOperation.and(ops.toArray(new AggregationOperation[0])).as(entry.getKey());
+        }
+        return facetOperation;
     }
 
     private AggregationOperation createUnwindAggregation(UnwindAggregationDto unwindAggregationDto) {
